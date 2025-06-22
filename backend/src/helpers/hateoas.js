@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 const HATEOAS = async (table, req) => {
   const results = table.map(item => {
     return {
@@ -7,14 +10,15 @@ const HATEOAS = async (table, req) => {
       metal: item.metal,
       precio: item.precio,
       stock: item.stock,
-      href: `/api/v1/products/${item.id}`,
+      href: `${req.protocol}://${req.get("host")}${req.originalUrl}/${item.id}`,
       method: 'GET'
     }
-  }).slice(0, 10);
+  });
+
   const total = table.length;
   const dataWithHATEOAS = {
     results,
-    total
+    total,
   }
   return dataWithHATEOAS
 }
