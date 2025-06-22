@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const HATEOAS = async (table, req) => {
+const HATEOAS = (table, req) => {
   const results = table.map(item => {
     return {
       id: item.id,

@@ -19,18 +19,24 @@ export const getJoyas = async (req, res) => {
         const dataWithHATEOAS = await HATEOAS(rows, req);
         res.json(dataWithHATEOAS);
     }   catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Error al obtener los datos"});
     }
 };
 
 export const getFiltroJoyas = async (req, res) => {
     try {
-        const { categoria, metal, precio } = req.query;
-        const query = `SELECT * FROM inventario WHERE categoria = $1 AND metal = $2 AND precio BETWEEN $3 AND $4`;
-        const { rows } = await pool.query(query, [categoria, metal, precio]);
+        const { precio_min, precio_max, categoria, metal} = req.query;
+        if (!precio_min || !precio_max || !categoria || !metal) {
+            return res.status(400).json({ error: "Faltan filtros requeridos" });
+        }
+        const valores = [precio_min, precio_max, categoria, metal];
+        const query = `SELECT * FROM inventario WHERE precio >= $1 AND precio <= $2 AND categoria = $3 AND metal = $4`;
+        const { rows } = await pool.query(query, valores);
         const dataWithHATEOAS = await HATEOAS(rows, req);
         res.json(dataWithHATEOAS);
     }   catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Error al obtener los datos"});
     }
 };
